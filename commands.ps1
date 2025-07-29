@@ -1,59 +1,6 @@
-$e = "$([char]27)"
-
-function CenterText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
-{
-    If (($inputLine.length + ($wrapChar.Length * 2)) -ge $textWidth)
-    {
-        return -join($wrapChar, $inputLine.Substring(0, $textWidth - 2 * $wrapChar.Length), $wrapChar)
-    }
-    else
-    {
-        $diff = ($textWidth + (2 * $wrapChar.Length)) - $inputLine.Length
-        $spaceCount = [math]::Floor($diff / 2)
-        $leadingSpaces = $(" " * $spaceCount)
-
-        if (-join( $wrapChar, $leadingSpaces, $inputLine, $leadingSpaces, $wrapChar).Length -lt $textWidth)
-        {
-            return -join( $wrapChar, $leadingSpaces, $inputLine, $leadingSpaces, $wrapChar, " ")
-        }
-        else
-        {
-            return -join( $wrapChar, $leadingSpaces, $inputLine, $leadingSpaces, $wrapChar)
-        }
-    }
-}
-
-function LeftText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
-{
-    If ($inputLine.length -ge $textWidth)
-    {
-        return -join($inputLine.Substring(0, $textWidth))
-    }
-    else
-    {
-        $diff = $textWidth - $inputLine.Length
-        $leadingSpaces = $(" " * $diff)
-
-        return -join($inputLine, $leadingSpaces)
-    }
-}
-
-function RightText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
-{
-    If (($inputLine.length + (2 * $wrapChar.Length)) -ge $textWidth - 1)
-    {
-        $trimmed = $textWidth - (2 * $wrapChar.Length)
-
-        return -join($wrapChar, $inputLine.Substring(0, $trimmed - 2), $wrapChar, "  ")
-    }
-    else
-    {
-        $diff = $textWidth - ($inputLine.Length + (2 * $wrapChar.Length))
-        $leadingSpaces = $(" " * $diff)
-
-        return -join($wrapChar, $inputLine, $wrapChar, $leadingSpaces)
-    }
-}
+#
+# Public functions = C64 commands
+#
 
 function LIST([string]$dirName)
 {
@@ -113,35 +60,6 @@ function EDIT($File)
     bash -c "nano $File"
 }
 
-#
-# Internal commands (should be hidden inside of a module)
-#
-
-$varNameRegEx = '([a-zA-Z]+)([\$|\%]?)' # returns name and type
-$expressionRegEx = '\s*(\S+)\s*'        # returns expression
-
-function _CalculateExpressionValue([string]$Expression)
-{
-    # TODO: Hide this in module
-    while ($Expression -match $varNameRegEx)
-    {
-        $Expression = $Expression -replace $Matches[0], [string](Get-Variable -Name $Matches[1] -ValueOnly -Scope Global)
-    }
-
-    try
-    {
-        return (Invoke-Expression $Expression)
-    }
-    catch
-    {
-        "SYNTAX ERROR"
-    }
-}
-
-#
-# Public functions = C64 commands
-#
-
 function RUN($File)
 {
     Invoke-Item $File
@@ -169,4 +87,85 @@ function LET([string]$inputLn)
 function PRINT([string]$inputLn)
 {
     Write-Host (_CalculateExpressionValue $inputLn)
+}
+
+#
+# Internal commands (should be hidden inside of a module)
+#
+
+$e = "$([char]27)"
+$varNameRegEx = '([a-zA-Z]+)([\$|\%]?)' # returns name and type
+$expressionRegEx = '\s*(\S+)\s*'        # returns expression
+
+function _CalculateExpressionValue([string]$Expression)
+{
+    # TODO: Hide this in module
+    while ($Expression -match $varNameRegEx)
+    {
+        $Expression = $Expression -replace $Matches[0], [string](Get-Variable -Name $Matches[1] -ValueOnly -Scope Global)
+    }
+
+    try
+    {
+        return (Invoke-Expression $Expression)
+    }
+    catch
+    {
+        "SYNTAX ERROR"
+    }
+}
+
+function CenterText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
+{
+    If (($inputLine.length + ($wrapChar.Length * 2)) -ge $textWidth)
+    {
+        return -join($wrapChar, $inputLine.Substring(0, $textWidth - 2 * $wrapChar.Length), $wrapChar)
+    }
+    else
+    {
+        $diff = ($textWidth + (2 * $wrapChar.Length)) - $inputLine.Length
+        $spaceCount = [math]::Floor($diff / 2)
+        $leadingSpaces = $(" " * $spaceCount)
+
+        if (-join( $wrapChar, $leadingSpaces, $inputLine, $leadingSpaces, $wrapChar).Length -lt $textWidth)
+        {
+            return -join( $wrapChar, $leadingSpaces, $inputLine, $leadingSpaces, $wrapChar, " ")
+        }
+        else
+        {
+            return -join( $wrapChar, $leadingSpaces, $inputLine, $leadingSpaces, $wrapChar)
+        }
+    }
+}
+
+function LeftText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
+{
+    If ($inputLine.length -ge $textWidth)
+    {
+        return -join($inputLine.Substring(0, $textWidth))
+    }
+    else
+    {
+        $diff = $textWidth - $inputLine.Length
+        $leadingSpaces = $(" " * $diff)
+
+        return -join($inputLine, $leadingSpaces)
+    }
+}
+
+function RightText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
+{
+    If (($inputLine.length + (2 * $wrapChar.Length)) -ge $textWidth - 1)
+    {
+        $trimmed = $textWidth - (2 * $wrapChar.Length)
+
+        return -join($wrapChar, $inputLine.Substring(0, $trimmed - 2), $wrapChar, "  ")
+    }
+    else
+    {
+        $diff = $textWidth - ($inputLine.Length + (2 * $wrapChar.Length))
+        $leadingSpaces = $(" " * $diff)
+
+        return -join($wrapChar, $inputLine, $wrapChar, $leadingSpaces)
+    }
 }
