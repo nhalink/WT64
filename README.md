@@ -14,6 +14,7 @@ A Commodore 64 Experience for Windows Terminal
 - **`LOAD "$",8`** Shows the classic loading sequence
 - **`SYS64738`** Shows the opening prompt
 - **`EDIT <filename>`** Alias for Nano
+- **`RUN <filename>`** Run a file
 
 ### PREREQUISITES
 1. [Windows Terminal](https://aka.ms/terminal) © Microsoft
