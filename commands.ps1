@@ -154,15 +154,16 @@ function LET([string]$inputLn)
     if ($inputLn -notmatch $regex)
     {
         "SYNTAX ERROR"
-        exit
     }
-
-    $varName = $Matches[1]
-    $varType = $Matches[2]
-    $varCalculus = $Matches[3]
-    $varValue = (_CalculateExpressionValue $varCalculus)
-    Set-Variable -Name $varName -Value $varValue -Scope Global
-    # TODO: Include Type also
+    else
+    {
+        $varName = $Matches[1]
+        $varType = $Matches[2]
+        $varCalculus = $Matches[3]
+        $varValue = (_CalculateExpressionValue $varCalculus)
+        Set-Variable -Name $varName -Value $varValue -Scope Global
+        # TODO: Include Type also
+    }
 }
 
 function PRINT([string]$inputLn)
