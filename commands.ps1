@@ -56,7 +56,8 @@ function LOAD([string]$inputLn)
 
 function EDIT($File)
 {
-    $File = $File -replace “\\”, “/” -replace “ “, “\ “
+    $File = $File -replace "\\", "/" -replace " ", "\ "
+
     bash -c "nano $File"
 }
 
@@ -117,7 +118,7 @@ function _CalculateExpressionValue([string]$Expression)
 
 function CenterText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
 {
-    If (($inputLine.length + ($wrapChar.Length * 2)) -ge $textWidth)
+    if (($inputLine.length + ($wrapChar.Length * 2)) -ge $textWidth)
     {
         return -join($wrapChar, $inputLine.Substring(0, $textWidth - 2 * $wrapChar.Length), $wrapChar)
     }
@@ -140,7 +141,7 @@ function CenterText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
 
 function LeftText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
 {
-    If ($inputLine.length -ge $textWidth)
+    if ($inputLine.length -ge $textWidth)
     {
         return -join($inputLine.Substring(0, $textWidth))
     }
@@ -155,7 +156,7 @@ function LeftText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
 
 function RightText([string]$inputLine, [int]$textWidth, [string]$wrapChar)
 {
-    If (($inputLine.length + (2 * $wrapChar.Length)) -ge $textWidth - 1)
+    if (($inputLine.length + (2 * $wrapChar.Length)) -ge $textWidth - 1)
     {
         $trimmed = $textWidth - (2 * $wrapChar.Length)
 
