@@ -18,7 +18,7 @@ function LIST([string]$dirName)
     -join("0 $e[44m$e[94m$e[7m", (CenterText $folderName ($midWidth - 6)), "$e[27m$e[0m")
     Get-ChildItem $dirName -directory | ForEach-Object { -join((LeftText ([math]::Round($_.Length/100)).ToString() 6), ' ', (RightText $_.name.toUpper() ($midWidth - 14) '"')) }
     Get-ChildItem $dirName -file .* | ForEach-Object { -join((LeftText ([math]::Round($_.Length/100)).ToString() 6), ' ', (RightText $_.name.toUpper() ($midWidth - 14) '"')) }
-    Get-ChildItem $dirName -file *.* | ForEach-Object { if ($_.name.toUpper().Split(".")[0] -gt 0) { -join((LeftText ([math]::Round($_.Length/100)).ToString() 6), ' ', (RightText $_.name.toUpper().Split(".")[0] ($midWidth - 14) '"'), " ", (RightText $_.name.toUpper().Split(".")[1] 10 )) } }
+    Get-ChildItem $dirName -file *.* | ForEach-Object { if ($_.name.toUpper().Split('.')[0].Length -gt 0) { -join( (LeftText ([math]::Round($_.Length/100)).ToString() 6), ' ', (RightText ($_.BaseName.toUpper() -replace $_.Extension, '') ($midWidth - 14) '"'), ' ', $_.Extension.toUpper().TrimStart('.') ) } }
     -join((Get-PSDrive c).Free, " BLOCKS FREE.")
     "READY."
 }
